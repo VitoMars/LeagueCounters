@@ -11,16 +11,7 @@ interface ChampionGridProps {
 
 const ChampionGrid: React.FC<ChampionGridProps> = ({ team, searchTerm, category }) => {
   const latestPatch = useStore(state => state.latestPatch);
-
-  const championsList = useStore(state => {
-    if (team === 'ally') {
-      return state.allyChampionsList;
-    } else if (team === 'enemy') {
-      return state.enemyChampionsList;
-    } else {
-      return [];
-    }
-  });
+  const championsList = useStore(state => state.championsList);
 
   const filteredChampions = championsList.filter((champion: Champion) =>
     champion.name.toLowerCase().includes(searchTerm.toLowerCase().trim()) &&
@@ -32,7 +23,7 @@ const ChampionGrid: React.FC<ChampionGridProps> = ({ team, searchTerm, category 
       {filteredChampions.map(champion => (
         <Grid key={champion.id} item xs={6} sm={4} md={3}>
           <CardActionArea sx={{ height: '100%' }}>
-            <Card variant="outlined" sx={{ height: '100%', }}>
+            <Card variant="outlined" sx={{ height: '100%' }}>
               {latestPatch && (
                 <CardMedia
                   component="img"

@@ -5,16 +5,12 @@ import { Category } from '../models/Category';
 interface StoreState {
   latestPatch: string;
   championsList: Champion[];
-  allyChampionsList: Champion[];
-  enemyChampionsList: Champion[];
   allyTeam: Champion[];
   enemyTeam: Champion[];
   categories: Category[];
   recommendedChampions: Champion[];
   setLatestPatch: (patch: string) => void;
   setChampionsList: (champion: Champion[]) => void;
-  setAllyChampionsList: (champion: Champion[]) => void;
-  setEnemyChampionsList: (champion: Champion[]) => void;
   addToAllyTeam: (champion: Champion) => void;
   addToEnemyTeam: (champion: Champion) => void;
   setCategories: (categories: Category[]) => void;
@@ -24,16 +20,12 @@ interface StoreState {
 export const useStore = create<StoreState>((set) => ({
   latestPatch: '',
   championsList: [],
-  allyChampionsList: [],
-  enemyChampionsList: [],
   allyTeam: [],
   enemyTeam: [],
   categories: [],
   recommendedChampions: [],
   setLatestPatch: (latestPatch) => set({ latestPatch }),
   setChampionsList: (championsList) => set({ championsList }),
-  setAllyChampionsList: (allyChampionsList) => set({ allyChampionsList }),
-  setEnemyChampionsList: (enemyChampionsList) => set({ enemyChampionsList }),
   addToAllyTeam: (champion) => set((state) => ({
     allyTeam: [...state.allyTeam, champion],
   })),

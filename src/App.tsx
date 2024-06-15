@@ -9,8 +9,6 @@ import { useStore } from './store';
 const App: React.FC = () => {
   const setLatestPatch = useStore(state => state.setLatestPatch);
   const setChampionsList = useStore(state => state.setChampionsList);
-  const setAllyChampionsList = useStore(state => state.setAllyChampionsList);
-  const setEnemyChampionsList = useStore(state => state.setEnemyChampionsList);
 
   useEffect(() => {
     const fetchAndSetData = async () => {
@@ -21,8 +19,6 @@ const App: React.FC = () => {
         const championList = await getChampionsList(latestPatch);
         console.log("championList", championList);
         setChampionsList(championList);
-        setAllyChampionsList(championList);
-        setEnemyChampionsList(championList);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
