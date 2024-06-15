@@ -1,32 +1,45 @@
 import { create } from 'zustand';
 import { Champion } from '../models/Champion';
+import { Category } from '../models/Category';
 
 interface StoreState {
   latestPatch: string;
   championsList: Champion[];
+  allyChampionsList: Champion[];
+  enemyChampionsList: Champion[];
   allyTeam: Champion[];
   enemyTeam: Champion[];
+  categories: Category[];
   recommendedChampions: Champion[];
   setLatestPatch: (patch: string) => void;
   setChampionsList: (champion: Champion[]) => void;
+  setAllyChampionsList: (champion: Champion[]) => void;
+  setEnemyChampionsList: (champion: Champion[]) => void;
   addToAllyTeam: (champion: Champion) => void;
   addToEnemyTeam: (champion: Champion) => void;
+  setCategories: (categories: Category[]) => void;
   setRecommendedChampions: (champions: Champion[]) => void;
 }
 
 export const useStore = create<StoreState>((set) => ({
   latestPatch: '',
   championsList: [],
+  allyChampionsList: [],
+  enemyChampionsList: [],
   allyTeam: [],
   enemyTeam: [],
+  categories: [],
   recommendedChampions: [],
-  setLatestPatch: (patch) => set({ latestPatch: patch }),
-  setChampionsList: (list) => set({ championsList: list }),
+  setLatestPatch: (latestPatch) => set({ latestPatch }),
+  setChampionsList: (championsList) => set({ championsList }),
+  setAllyChampionsList: (allyChampionsList) => set({ allyChampionsList }),
+  setEnemyChampionsList: (enemyChampionsList) => set({ enemyChampionsList }),
   addToAllyTeam: (champion) => set((state) => ({
     allyTeam: [...state.allyTeam, champion],
   })),
   addToEnemyTeam: (champion) => set((state) => ({
     enemyTeam: [...state.enemyTeam, champion],
   })),
-  setRecommendedChampions: (champions) => set({ recommendedChampions: champions }),
+  setCategories: (categories) => set({ categories }),
+  setRecommendedChampions: (recommendedChampions) => set({ recommendedChampions }),
 }));

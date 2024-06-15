@@ -1,0 +1,1 @@
+export type roles = "Fighter" | "Mage" | "Assassin" | "Marksman" | "Tank" | "Support"

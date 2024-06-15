@@ -1,28 +1,28 @@
-import { useEffect } from 'react';
-import ChampionSelection from './components/ChampionSelection';
-import RecommendedChampions from './components/RecommendedChampions';
-import ChampionSearch from './components/ChampionSearch'; // Importa il componente ChampionSearch
+import React, { useEffect } from 'react';
+import ChampionSearch from './components/ChampionSearch';
 import { Container, Typography } from '@mui/material';
-import ChampionGrid from './components/ChampionGrid';
+// import ChampionGrid from './components/ChampionGrid';
 import { getLatestPatch } from './services/getLatestPatch';
 import { getChampionsList } from './services/getChampionsList';
 import { useStore } from './store';
-import { Champion } from './models/Champion';
 
-const App = () => {
-  const setLatestPatch = useStore((state) => state.setLatestPatch);
-  const setChampionsList = useStore((state) => state.setChampionsList);
+const App: React.FC = () => {
+  const setLatestPatch = useStore(state => state.setLatestPatch);
+  const setChampionsList = useStore(state => state.setChampionsList);
+  const setAllyChampionsList = useStore(state => state.setAllyChampionsList);
+  const setEnemyChampionsList = useStore(state => state.setEnemyChampionsList);
 
   useEffect(() => {
     const fetchAndSetData = async () => {
       try {
-        const latestPatch: string = await getLatestPatch();
-        // console.log("latestPatch", latestPatch);
+        const latestPatch = await getLatestPatch();
         setLatestPatch(latestPatch);
 
-        const championList: Champion[] = await getChampionsList(latestPatch);
+        const championList = await getChampionsList(latestPatch);
         console.log("championList", championList);
         setChampionsList(championList);
+        setAllyChampionsList(championList);
+        setEnemyChampionsList(championList);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -32,14 +32,21 @@ const App = () => {
   }, []);
 
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth="xl">
       <Typography variant="h3" gutterBottom>
-        Seleziona i Campioni di League of Legends
+        League Counters
       </Typography>
-      <ChampionSelection />
-      <RecommendedChampions />
       <ChampionSearch />
-      <ChampionGrid />
+
+      {/* <Typography variant="h4" gutterBottom>
+        Mio Team
+      </Typography>
+      <ChampionGrid team="ally" searchTerm='' />
+
+      <Typography variant="h4" gutterBottom>
+        Team Avversario
+      </Typography>
+      <ChampionGrid team="enemy" searchTerm='' /> */}
     </Container>
   );
 };

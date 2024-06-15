@@ -1,71 +1,96 @@
-// src/components/ChampionSearch.tsx
 import React, { useState } from 'react';
-import { Grid, TextField, Typography, Button } from '@mui/material';
-import ChampionCard from './ChampionCard'; // Assicurati di avere il componente ChampionCard importato correttamente
-
-import { useStore } from '../store';
-import { Champion } from '../models/Champion'; // Assumi che esista un modello Champion
+import { Grid, TextField, Typography, Divider, Box, Paper, IconButton } from '@mui/material';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faHandRock as FighterIcon,
+  faHatWizard as MageIcon,
+  faMask as AssassinIcon,
+  faCrosshairs as MarksmanIcon,
+  faShieldAlt as TankIcon,
+  faHandsHelping as SupportIcon
+} from '@fortawesome/free-solid-svg-icons';
+import { Tooltip } from '@mui/material';
+import ChampionGrid from './ChampionGrid';
+// import { useStore } from '../store';
 
 const ChampionSearch: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [searchResults, setSearchResults] = useState<Champion[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
 
-  const { addToAllyTeam, addToEnemyTeam, championsList } = useStore(state => ({
-    addToAllyTeam: state.addToAllyTeam,
-    addToEnemyTeam: state.addToEnemyTeam,
-    championsList: state.championsList, // Ottieni la lista di campioni dallo store
-  }));
+  // const { addToAllyTeam, addToEnemyTeam, categories } = useStore(state => ({
+  //   addToAllyTeam: state.addToAllyTeam,
+  //   addToEnemyTeam: state.addToEnemyTeam,
+  //   categories: state.categories,
+  // }));
 
-  // Funzione per gestire la ricerca dei campioni
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value.toLowerCase().trim();
+    const value = event.target.value;
     setSearchTerm(value);
-
-    // Filtra i campioni dalla lista dello store
-    const filteredChampions = championsList.filter((champion: Champion) =>
-      champion.name.toLowerCase().includes(value)
-    );
-
-    setSearchResults(filteredChampions);
   };
 
-  // Funzione per aggiungere un campione al team (alleato o nemico)
-  const handleAddToTeam = (champion: Champion, isEnemy: boolean) => {
-    if (isEnemy) {
-      addToEnemyTeam(champion);
-    } else {
-      addToAllyTeam(champion);
-    }
+  const handleCategorySelect = (category: string) => {
+    setSelectedCategory(category === selectedCategory ? '' : category);
   };
+
+  const categoryIcons = [
+    { name: 'Fighter', icon: <FontAwesomeIcon icon={FighterIcon} /> },
+    { name: 'Mage', icon: <FontAwesomeIcon icon={MageIcon} /> },
+    { name: 'Assassin', icon: <FontAwesomeIcon icon={AssassinIcon} /> },
+    { name: 'Marksman', icon: <FontAwesomeIcon icon={MarksmanIcon} /> },
+    { name: 'Tank', icon: <FontAwesomeIcon icon={TankIcon} /> },
+    { name: 'Support', icon: <FontAwesomeIcon icon={SupportIcon} /> }
+  ];
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12}>
-        <Typography variant="h5" gutterBottom>
-          Ricerca e Selezione dei Campioni
-        </Typography>
-        <TextField
-          fullWidth
-          label="Cerca Campione"
-          variant="outlined"
-          value={searchTerm}
-          onChange={handleSearch}
-        />
-      </Grid>
-      <Grid item xs={12}>
-        <Grid container spacing={2}>
-          {/* Mostra i risultati della ricerca */}
-          {searchResults.map(champion => (
-            <Grid key={champion.id} item xs={6} sm={4} md={3}>
-              <ChampionCard champion={champion} onClick={() => handleAddToTeam(champion, false)} />
-              <Button variant="contained" color="secondary" onClick={() => handleAddToTeam(champion, true)}>
-                Aggiungi al Team Avversario
-              </Button>
-            </Grid>
-          ))}
+    <Paper elevation={3} style={{ padding: 20 }}>
+      <Grid container spacing={4}>
+        <Grid item xs={12}>
+          <Typography variant="h5" gutterBottom>
+            Ricerca e Selezione dei Campioni
+          </Typography>
+          <TextField
+            fullWidth
+            label="Cerca Campione"
+            variant="outlined"
+            value={searchTerm}
+            onChange={handleSearch}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Box display="flex" justifyContent="center" mb={2}>
+            {categoryIcons.map(category => (
+              <Tooltip key={category.name} title={category.name} placement="bottom">
+                <IconButton
+                  key={category.name}
+                  onClick={() => handleCategorySelect(category.name)}
+                  color={selectedCategory === category.name ? 'primary' : 'default'}
+                >
+                  {category.icon}
+                </IconButton>
+              </Tooltip>
+            ))}
+          </Box>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Box border={2} borderRadius={5} borderColor="#3f51b5" p={2}>
+            <Typography variant="h6" gutterBottom align="center">
+              PICKS FOR YOUR TEAM
+            </Typography>
+            <Divider />
+            <ChampionGrid team="ally" searchTerm={searchTerm} category={selectedCategory} />
+          </Box>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Box border={2} borderRadius={5} borderColor="#f50057" p={2}>
+            <Typography variant="h6" gutterBottom align="center">
+              PICKS FOR THE ENEMY TEAM
+            </Typography>
+            <Divider />
+            <ChampionGrid team="enemy" searchTerm={searchTerm} category={selectedCategory} />
+          </Box>
         </Grid>
       </Grid>
-    </Grid>
+    </Paper>
   );
 };
 

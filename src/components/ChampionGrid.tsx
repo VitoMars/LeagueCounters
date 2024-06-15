@@ -1,39 +1,37 @@
-// src/components/ChampionGrid.tsx
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Grid, Card, CardActionArea, CardContent, CardMedia, Typography } from '@mui/material';
-import { getChampionsList } from '../services/getChampionsList';
-import { Champion } from '../models/Champion';
 import { useStore } from '../store';
+import { Champion } from '../models/Champion';
 
-const ChampionGrid: React.FC = () => {
-  const [champions, setChampions] = useState<Champion[]>([]);
+interface ChampionGridProps {
+  team: 'ally' | 'enemy';
+  searchTerm: string;
+  category: string;
+}
 
-  // const champions = useStore((state) => state.championsList);
+const ChampionGrid: React.FC<ChampionGridProps> = ({ team, searchTerm, category }) => {
+  const latestPatch = useStore(state => state.latestPatch);
 
-  const latestPatch = useStore((state) => state.latestPatch);
+  const championsList = useStore(state => {
+    if (team === 'ally') {
+      return state.allyChampionsList;
+    } else if (team === 'enemy') {
+      return state.enemyChampionsList;
+    } else {
+      return [];
+    }
+  });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (latestPatch) {
-          const data = await getChampionsList(latestPatch);
-          const championList: Champion[] = data; // Estrai solo i dati dei campioni
 
-          console.log("championList", championList)
-
-          setChampions(championList);
-        }
-      } catch (error) {
-        console.error('Error fetching champion list:', error);
-      }
-    };
-
-    fetchData();
-  }, [latestPatch]);
+  // Filtra i campioni in base al termine di ricerca e alla categoria selezionata
+  const filteredChampions = championsList.filter((champion: Champion) =>
+    champion.name.toLowerCase().includes(searchTerm.toLowerCase().trim()) &&
+    (category ? champion.tags.includes(category) : true)
+  );
 
   return (
     <Grid container spacing={2}>
-      {champions.map(champion => (
+      {filteredChampions.map(champion => (
         <Grid key={champion.id} item xs={6} sm={4} md={3}>
           <Card>
             <CardActionArea>
@@ -48,6 +46,9 @@ const ChampionGrid: React.FC = () => {
               <CardContent>
                 <Typography gutterBottom variant="h5" component="div">
                   {champion.name}
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                  {champion.tags.join(', ')}
                 </Typography>
               </CardContent>
             </CardActionArea>
