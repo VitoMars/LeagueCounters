@@ -22,8 +22,6 @@ const ChampionGrid: React.FC<ChampionGridProps> = ({ team, searchTerm, category 
     }
   });
 
-
-  // Filtra i campioni in base al termine di ricerca e alla categoria selezionata
   const filteredChampions = championsList.filter((champion: Champion) =>
     champion.name.toLowerCase().includes(searchTerm.toLowerCase().trim()) &&
     (category ? champion.tags.includes(category) : true)
@@ -33,14 +31,15 @@ const ChampionGrid: React.FC<ChampionGridProps> = ({ team, searchTerm, category 
     <Grid container spacing={2}>
       {filteredChampions.map(champion => (
         <Grid key={champion.id} item xs={6} sm={4} md={3}>
-          <Card>
-            <CardActionArea>
+          <CardActionArea sx={{ height: '100%' }}>
+            <Card variant="outlined" sx={{ height: '100%', }}>
               {latestPatch && (
                 <CardMedia
                   component="img"
                   height="140"
                   image={`https://ddragon.leagueoflegends.com/cdn/${latestPatch}/img/champion/${champion.id}.png`}
                   alt={champion.name}
+                  sx={{ objectFit: 'cover' }}
                 />
               )}
               <CardContent>
@@ -51,8 +50,8 @@ const ChampionGrid: React.FC<ChampionGridProps> = ({ team, searchTerm, category 
                   {champion.tags.join(', ')}
                 </Typography>
               </CardContent>
-            </CardActionArea>
-          </Card>
+            </Card>
+          </CardActionArea>
         </Grid>
       ))}
     </Grid>
